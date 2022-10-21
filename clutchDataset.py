@@ -9,6 +9,8 @@ from torch.utils.data import DataLoader
 import cv2
 from PIL import Image
 from torchvision.transforms import transforms
+from tabulate import tabulate
+
 # 0-healthy, 1-misalignment, 2-rotor
 data_path = 'data/clutch_2'
 
@@ -19,7 +21,6 @@ af = pd.read_csv('annotations_file.csv')
 train_data = af[af["dataset"].str.contains('train')]
 test_data = af[af["dataset"].str.contains('test')]
 val_data = af[af["dataset"].str.contains('val')]
-
 
 class clutchDataset(Dataset):
 
@@ -40,12 +41,12 @@ class clutchDataset(Dataset):
         img = cv2.imread(img_path)
         img_norm = cv2.normalize(img, None, 0, 255, cv2.NORM_MINMAX)
         image = Image.fromarray(img_norm)
-        label = self.dataframe.iloc[idx, 2]
-
-        if self.is_train:
-            label = torch.tensor(int(self.dataframe.iloc[idx, 2]))
-        else:
-            label = torch.tensor(1)
+        #label = self.dataframe.iloc[idx, 2]
+        label = torch.tensor(int(self.dataframe.iloc[idx, 2]))
+        # if self.is_train:
+        #     label = torch.tensor(int(self.dataframe.iloc[idx, 2]))
+        # else:
+        #     label = torch.tensor(1)
 
         if self.transform:
             image = self.transform(image)
@@ -54,7 +55,7 @@ class clutchDataset(Dataset):
 
 
 transform_train = transforms.Compose([
-    transforms.Resize(512),
+    #transforms.Resize(512),
     transforms.RandomHorizontalFlip(),
     #transforms.CenterCrop(200),
     transforms.Grayscale(num_output_channels = 1),
@@ -62,20 +63,20 @@ transform_train = transforms.Compose([
 ])
 
 transform_valid = transforms.Compose([
-    transforms.Resize(224),
+    #transforms.Resize(224),
     transforms.Grayscale(num_output_channels = 1),
     transforms.ToTensor()
 ])
 
 transform_test = transforms.Compose([
-    transforms.Resize(224),
+    #transforms.Resize(224),
     transforms.Grayscale(num_output_channels = 1),
     transforms.ToTensor()
 ])
 
 train_dataset = clutchDataset(train_data, data_path, True, transform_train)
-valid_dataset = clutchDataset(train_data, data_path, False, transform_valid)
-test_dataset = clutchDataset(train_data, data_path, False, transform_test)
+valid_dataset = clutchDataset(val_data, data_path, False, transform_valid)
+test_dataset = clutchDataset(test_data, data_path, False, transform_test)
 
 train_dataloader = DataLoader(train_dataset, batch_size=64, shuffle=True)
 valid_dataloader = DataLoader(valid_dataset, batch_size=64, shuffle=True)

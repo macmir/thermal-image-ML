@@ -5,9 +5,9 @@ from torchvision.transforms import ToTensor
 import clutchDataset
 
 
-BATCH_SIZE = 64
+BATCH_SIZE = 32
 EPOCHS = 10
-LEARNING_RATE = .001
+LEARNING_RATE = .0001
 
 data_path = 'data/clutch_2'
 
@@ -16,9 +16,13 @@ class FeedForwardNet(nn.Module):
         super().__init__()
         self.flatten = nn.Flatten()
         self.dense_layers = nn.Sequential(
-            nn.Linear(640*512, 256),
+            nn.Linear(640*512, 512),
             nn.ReLU(),
-            nn.Linear(256, 3)
+            nn.Linear(512, 256),
+            nn.ReLU(),
+            nn.Linear(256, 128),
+            nn.ReLU(),
+            nn.Linear(128, 3)
         )
         self.softmax = nn.Softmax(dim=1)
 
@@ -71,6 +75,6 @@ if __name__ == "__main__":
     loss_fn = nn.CrossEntropyLoss()
     optimiser = torch.optim.Adam(feed_forward_net.parameters(), lr=LEARNING_RATE)
 
-    #train(feed_forward_net, train_data_loader, loss_fn, optimiser, device, EPOCHS)
-    #torch.save(feed_forward_net.state_dict(), "feedforwardnet.pth")
+    train(feed_forward_net, train_data_loader, loss_fn, optimiser, device, EPOCHS)
+    torch.save(feed_forward_net.state_dict(), "feedforwardnet.pth")
     print("Model trained and stored at feedforwardnet.pth")

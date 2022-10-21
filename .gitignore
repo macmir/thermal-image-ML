@@ -4024,3 +4024,4 @@ main.py
 nn_model.py
 nn_predictions.py
 .idea
+__pycache__/nn_model.cpython-310.pyc
