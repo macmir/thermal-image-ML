@@ -13,6 +13,7 @@ class_mapping = [
 def predict(model, input, target, class_mapping):
     model.eval()    # call it every time you want to make an inference
     with torch.no_grad():
+        print(input.size())
         predictions = model(input) # Tensor(1, 10) - 1-number of inputs, 10-number of classes
         # Tensor(1, 10) -> [[0.1, 0.1, 0.2 ... 0.6]] - sums up to 1.0 as we used softmax
         predicted_index = predictions[0].argmax(0) # take first max value

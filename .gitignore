@@ -4018,3 +4018,6 @@ data/MNIST/raw/train-images-idx3-ubyte
 data/MNIST/raw/train-images-idx3-ubyte.gz
 data/MNIST/raw/train-labels-idx1-ubyte
 data/MNIST/raw/train-labels-idx1-ubyte.gz
+__pycache__/clutchDataset.cpython-310.pyc
+__pycache__/train.cpython-310.pyc
+main.py
