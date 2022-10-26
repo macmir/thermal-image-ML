@@ -27,14 +27,15 @@ def predict(model, input, target, class_mapping):
 
 
 if __name__ == "__main__":
+
     # load back the model
     feed_forward_net = train.FeedForwardNet()
     state_dict = torch.load("feedforwardnet.pth")
     feed_forward_net.load_state_dict(state_dict)
 
     # load validation dataset
-    validation_data = clutchDataset.valid_dataset
-
+    #validation_data = clutchDataset.valid_dataset
+    validation_data = clutchDataset.test_dataset
     # get a sample from the validation dataset for inference
     for i in range(len(validation_data)):
         input, target = validation_data[i][0], validation_data[i][1]
@@ -48,4 +49,6 @@ if __name__ == "__main__":
             bad_prediction +=1
             total +=1
 
-    print(f"Good predictions: {good_prediction}\n Bad predictions: {bad_prediction}\n Total: {total}")
+    print()
+    print(f"Good predictions: {round(good_prediction/total*100, 2)}%")
+    print(f"\ntraining settings: \nepochs: {train.EPOCHS}\nbatch size: {train.BATCH_SIZE}\nlearning rate:{train.LEARNING_RATE}")

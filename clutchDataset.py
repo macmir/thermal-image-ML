@@ -22,6 +22,7 @@ train_data = af[af["dataset"].str.contains('train')]
 test_data = af[af["dataset"].str.contains('test')]
 val_data = af[af["dataset"].str.contains('val')]
 
+
 class clutchDataset(Dataset):
 
     def __init__(self, dataframe, img_dir, is_train, transform=None):
@@ -41,7 +42,7 @@ class clutchDataset(Dataset):
         img = cv2.imread(img_path)
         img_norm = cv2.normalize(img, None, 0, 255, cv2.NORM_MINMAX)
         image = Image.fromarray(img_norm)
-        #label = self.dataframe.iloc[idx, 2]
+        # label = self.dataframe.iloc[idx, 2]
         label = torch.tensor(int(self.dataframe.iloc[idx, 2]))
         # if self.is_train:
         #     label = torch.tensor(int(self.dataframe.iloc[idx, 2]))
@@ -55,22 +56,23 @@ class clutchDataset(Dataset):
 
 
 transform_train = transforms.Compose([
-    #transforms.Resize(512),
+    transforms.Resize((224, 224)),
     transforms.RandomHorizontalFlip(),
-    #transforms.CenterCrop(200),
-    transforms.Grayscale(num_output_channels = 1),
+    transforms.RandomPerspective(),
+    transforms.RandomRotation((1, 10)),
+    transforms.Grayscale(num_output_channels=1),
     transforms.ToTensor()
 ])
 
 transform_valid = transforms.Compose([
-    #transforms.Resize(224),
-    transforms.Grayscale(num_output_channels = 1),
+    transforms.Resize((224, 224)),
+    transforms.Grayscale(num_output_channels=1),
     transforms.ToTensor()
 ])
 
 transform_test = transforms.Compose([
-    #transforms.Resize(224),
-    transforms.Grayscale(num_output_channels = 1),
+    transforms.Resize((224, 224)),
+    transforms.Grayscale(num_output_channels=1),
     transforms.ToTensor()
 ])
 
@@ -83,8 +85,8 @@ valid_dataloader = DataLoader(valid_dataset, batch_size=64, shuffle=True)
 test_dataloader = DataLoader(test_dataset, batch_size=64, shuffle=True)
 
 train_features, train_labels = next(iter(train_dataloader))
-print(f"Feature batch shape: {train_features.size()}")
-print(f"Labels batch shape: {train_labels.size()}")
+# print(f"Feature batch shape: {train_features.size()}")
+# print(f"Labels batch shape: {train_labels.size()}")
 img = train_features[0].squeeze()
 if train_labels[0] == 0:
     label = 'healthy'
@@ -95,9 +97,9 @@ if train_labels[0] == 1:
 if train_labels[0] == 2:
     label = 'rotor damage'
 
-#label = train_labels[0]
-#plt.imshow(img, cmap="gray")
-#plt.show()
+# label = train_labels[0]
+# plt.imshow(img, cmap="gray")
+# plt.show()
 
-print(f"Label: {label}")
-print(train_dataset)
+# print(f"Label: {label}")
+# print(train_dataset)
