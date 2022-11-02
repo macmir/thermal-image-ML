@@ -17,7 +17,7 @@ class FeedForwardNet(nn.Module):
         super().__init__()
         self.flatten = nn.Flatten()
         self.dense_layers = nn.Sequential(
-            nn.Linear(224*224, 1024),
+            nn.Linear(225*180, 1024),
             nn.ReLU(),
             nn.Linear(1024, 512),
             nn.ReLU(),

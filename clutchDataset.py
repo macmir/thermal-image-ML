@@ -56,7 +56,7 @@ class clutchDataset(Dataset):
 
 
 transform_train = transforms.Compose([
-    transforms.Resize((224, 224)),
+    transforms.Resize((225, 180)),
     transforms.RandomHorizontalFlip(),
     transforms.RandomPerspective(),
     transforms.RandomRotation((1, 10)),
@@ -65,13 +65,13 @@ transform_train = transforms.Compose([
 ])
 
 transform_valid = transforms.Compose([
-    transforms.Resize((224, 224)),
+    transforms.Resize((225, 180)),
     transforms.Grayscale(num_output_channels=1),
     transforms.ToTensor()
 ])
 
 transform_test = transforms.Compose([
-    transforms.Resize((224, 224)),
+    transforms.Resize((225, 180)),
     transforms.Grayscale(num_output_channels=1),
     transforms.ToTensor()
 ])
