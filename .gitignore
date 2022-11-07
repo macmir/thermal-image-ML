@@ -4042,3 +4042,8 @@ train_bnn.py
 train_bnn.py
 train_bnn.py
 train_bnn.py
+__pycache__/FF.cpython-310.pyc
+__pycache__/CNN_2.cpython-310.pyc
+__pycache__/CNN.cpython-310.pyc
+CNN_predictions
+predictions_CNN.py

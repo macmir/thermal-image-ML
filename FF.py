@@ -6,7 +6,7 @@ import clutchDataset
 import matplotlib.pyplot as plt
 
 
-BATCH_SIZE = 512
+BATCH_SIZE = 64
 EPOCHS = 10
 LEARNING_RATE = .001
 
@@ -17,19 +17,13 @@ class FeedForwardNet(nn.Module):
         super().__init__()
         self.flatten = nn.Flatten()
         self.dense_layers = nn.Sequential(
-            nn.Linear(225*180, 1024),
+            nn.Linear(225*180, 512),
             nn.ReLU(),
-            nn.Linear(1024, 512),
-            nn.ReLU(),
-            nn.Linear(512, 256),
-            nn.ReLU(),
-            nn.Linear(256, 128),
+            nn.Linear(512, 128),
             nn.ReLU(),
             nn.Linear(128, 64),
             nn.ReLU(),
-            nn.Linear(64, 32),
-            nn.ReLU(),
-            nn.Linear(32, 3)
+            nn.Linear(64, 3)
         )
         self.softmax = nn.Softmax(dim=1)
 
@@ -69,7 +63,7 @@ def train(model, data_loader, loss_fn, optimiser, device, epochs):
 
 if __name__ == "__main__":
     train_data = clutchDataset.train_dataset
-    train_data_loader = clutchDataset.train_dataloader
+    train_data_loader = create_data_loader(train_data, BATCH_SIZE)
 
     if torch.cuda.is_available():
         device = "cuda"
