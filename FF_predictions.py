@@ -28,7 +28,7 @@ rotor_tot = 0
 def predict(model, input, target, class_mapping):
     model.eval()    # call it every time you want to make an inference
     with torch.no_grad():
-        print(input.size())
+        # print(input.size())
 
         predictions = model(input) # Tensor(1, 10) - 1-number of inputs, 10-number of classes
         # Tensor(1, 10) -> [[0.1, 0.1, 0.2 ... 0.6]] - sums up to 1.0 as we used softmax
@@ -52,17 +52,21 @@ if __name__ == "__main__":
     y_true = []
     y_pred = []
     # get a sample from the validation dataset for inference
+    print(len(validation_data))
     for i in range(len(validation_data)):
         input, target = validation_data[i][0], validation_data[i][1]
     # make an inference
+    #     print(input.size())
+
         predicted, expected = predict(feed_forward_net, input, target, class_mapping)
         #print(f"Predicted: '{predicted}', expected: '{expected}'")
-        y_true.append(predicted)
-        y_pred.append(expected)
-        
+        y_true.append(expected)
+        y_pred.append(y_true)
+
     cm = metrics.confusion_matrix(y_true, y_pred, labels=["healthy", "misalignment", "rotor damage"])
     print("Confusion matrix:")
     print(cm)
+    print(len(y_true))
     pred_sum = [0, 0, 0]
     actual_sum = [0, 0, 0]
     for i in range(3):

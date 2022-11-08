@@ -4,7 +4,7 @@ from torch.utils.data import DataLoader
 from torchvision.transforms import ToTensor
 import clutchDataset
 import matplotlib.pyplot as plt
-
+import sys
 
 BATCH_SIZE = 64
 EPOCHS = 10
@@ -12,12 +12,14 @@ LEARNING_RATE = .001
 
 data_path = 'data/clutch_2'
 loss_val = []
+
+
 class FeedForwardNet(nn.Module):
     def __init__(self):
         super().__init__()
         self.flatten = nn.Flatten()
         self.dense_layers = nn.Sequential(
-            nn.Linear(225*180, 512),
+            nn.Linear(225 * 180, 512),
             nn.ReLU(),
             nn.Linear(512, 128),
             nn.ReLU(),
@@ -32,6 +34,7 @@ class FeedForwardNet(nn.Module):
         logits = self.dense_layers(flattened_data)
         predictions = self.softmax(logits)
         return predictions
+
 
 def create_data_loader(train_data, batch_size):
     train_dataloader = DataLoader(train_data, batch_size=batch_size)
@@ -54,12 +57,14 @@ def train_single_epoch(model, data_loader, loss_fn, optimiser, device):  # train
     print(f"Loss: {loss.item()}")
     loss_val.append(loss.item())
 
+
 def train(model, data_loader, loss_fn, optimiser, device, epochs):
     for i in range(epochs):
-        print(f"Epoch {i+1}")
+        print(f"Epoch {i + 1}")
         train_single_epoch(model, data_loader, loss_fn, optimiser, device)
         print("-" * 20)
     print("Training is done!")
+
 
 if __name__ == "__main__":
     train_data = clutchDataset.train_dataset
@@ -81,7 +86,7 @@ if __name__ == "__main__":
     print("Model trained and stored at feedforwardnet.pth")
     epochs = []
     for i in range(EPOCHS):
-        epochs.append(i+1)
+        epochs.append(i + 1)
     plt.plot(epochs, loss_val)
     plt.ylabel("Loss")
     plt.xlabel("Epoch")
