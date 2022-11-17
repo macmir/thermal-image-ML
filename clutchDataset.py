@@ -57,8 +57,15 @@ class clutchDataset(Dataset):
         return image, label
 
 
+# w = int(640 / 2)
+# h = int(512 / 2)
+# w = 640
+# h = 512
+w = int(640 / 8)
+h = int(512 / 8)
+
 transform_train = transforms.Compose([
-    transforms.Resize((225, 180)),
+    transforms.Resize((w, h)),
     transforms.RandomHorizontalFlip(),
     transforms.RandomPerspective(),
     transforms.RandomRotation((1, 10)),
@@ -67,13 +74,13 @@ transform_train = transforms.Compose([
 ])
 
 transform_valid = transforms.Compose([
-    transforms.Resize((225, 180)),
+    transforms.Resize((w, h)),
     transforms.Grayscale(num_output_channels=1),
     transforms.ToTensor()
 ])
 
 transform_test = transforms.Compose([
-    transforms.Resize((225, 180)),
+    transforms.Resize((w, h)),
     transforms.Grayscale(num_output_channels=1),
     transforms.ToTensor()
 ])
