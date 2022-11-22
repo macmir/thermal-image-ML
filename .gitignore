@@ -4040,3 +4040,5 @@ __pycache__/CNN_predictions.cpython-310.pyc
 __pycache__/CNN_rewritten.cpython-310.pyc
 cifar_net.pth
 pytorch_cnn_tutorial.py
+CNN_best.pth
+CNN_old.py

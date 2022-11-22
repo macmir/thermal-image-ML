@@ -6,7 +6,7 @@ import CNN_metrics
 class_mapping = CNN.class_mapping
 
 net = CNN.CNN()
-state_dict = torch.load('CNN_123.pth')
+state_dict = torch.load('CNNmb.pth')
 net.load_state_dict(state_dict)
 
 test_data = clutchDataset.test_dataset
