@@ -3,11 +3,10 @@ import torch.nn as nn
 import torchvision
 import torchvision.transforms as transforms
 import matplotlib.pyplot as plt
-import clutch_dataset
-
+import clutchDataset
 
 data_path = 'data/clutch_2'
-batch_size = 64
+batch_size = 1
 num_classes = 3
 learning_rate = .001
 num_epochs = 20
@@ -19,9 +18,9 @@ device = torch.device("cuda" if torch.cuda.is_available() else "gpu")
 
 # Preparing data
 
-train_dataset = clutch_dataset.train_dataset
-test_dataset = clutch_dataset.test_dataset
-valid_dataset = clutch_dataset.valid_dataset
+train_dataset = clutchDataset.train_dataset
+test_dataset = clutchDataset.test_dataset
+valid_dataset = clutchDataset.valid_dataset
 
 train_loader = torch.utils.data.DataLoader(
     dataset=train_dataset,
@@ -38,31 +37,30 @@ valid_loader = torch.utils.data.DataLoader(
     batch_size=batch_size,
     shuffle=False)
 
+
 # CNN class
 
 class CNN(nn.Module):
     def __init__(self):
         super(CNN, self).__init__()
         self.net = nn.Sequential(
-            nn.Conv2d(in_channels=1, out_channels=16, kernel_size=3),
-            nn.Conv2d(in_channels=16, out_channels=16, kernel_size=3),
-            nn.MaxPool2d(kernel_size=3, stride=2),
-
-            nn.Conv2d(in_channels=16, out_channels=32, kernel_size=3),
+            nn.Conv2d(in_channels=3, out_channels=32, kernel_size=3),
+            nn.BatchNorm2d(32),
+            nn.ReLU(inplace=True),
             nn.Conv2d(in_channels=32, out_channels=32, kernel_size=3),
-            nn.MaxPool2d(kernel_size=3, stride=2),
+            nn.BatchNorm2d(32),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
 
             nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3),
+            nn.BatchNorm2d(64),
+            nn.ReLU(inplace=True),
             nn.Conv2d(in_channels=64, out_channels=64, kernel_size=3),
-            nn.MaxPool2d(kernel_size=3, stride=2),
-
-            nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3),
-            nn.Conv2d(in_channels=128, out_channels=256, kernel_size=3),
-            nn.MaxPool2d(kernel_size=3, stride=2),
-
-            nn.Dropout(0.5),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.BatchNorm2d(64),
+            # nn.Dropout(0.5),
             nn.Flatten(),
-            nn.Linear(10240, 64),
+            nn.Linear(68672, 64),
             nn.ReLU(),
             nn.Linear(64, 3)
 
@@ -71,7 +69,7 @@ class CNN(nn.Module):
     def forward(self, x):
         # for layer in self.net:
         #     x = layer(x)
-            #print(x.size())
+        # print(x.size())
         x = self.net(x)
         return x
 
@@ -105,17 +103,18 @@ def train():
 if __name__ == '__main__':
 
     model = CNN().to(device)
-    criterion = nn.CrossEntropyLoss()
+    criterion = nn.CrossEntropyLoss(label_smoothing=0.1)
     optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate, weight_decay=0.005, momentum=0.9)
+    # optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
     total_step = len(train_loader)
 
     train()
 
-    torch.save(model.state_dict(), "CNN.pth")
+    torch.save(model.state_dict(), "CNN_3ch_old_annotations.pth")
 
     epochs = []
     for i in range(num_epochs):
-        epochs.append(i+1)
+        epochs.append(i + 1)
     plt.plot(loss_val, '-g')
     plt.plot(val_loss_val, '-r')
     plt.ylabel("Loss")

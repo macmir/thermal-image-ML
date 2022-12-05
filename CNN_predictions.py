@@ -2,11 +2,12 @@ import torch
 import CNN
 import clutchDataset
 import CNN_metrics
+import sys
 
 class_mapping = CNN.class_mapping
 
 net = CNN.CNN()
-state_dict = torch.load('CNNmb.pth')
+state_dict = torch.load('CNN_3ch_by2.pth')
 net.load_state_dict(state_dict)
 
 test_data = clutchDataset.test_dataset
@@ -21,8 +22,12 @@ for i in range(len(test_data)):
     net.eval()
     with torch.no_grad():
         input = torch.unsqueeze(input, 0)
+
+        
         predictions = net(input)
+        
         predicted_index = predictions[0].argmax(0)
+        
 
         predicted = class_mapping[predicted_index]
         expected = class_mapping[target]

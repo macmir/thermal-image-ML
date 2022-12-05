@@ -7,15 +7,22 @@ from torch.utils.data import DataLoader
 import cv2
 from PIL import Image
 from torchvision.transforms import transforms
+from tabulate import tabulate
 
 
 # 0-healthy, 1-misalignment, 2-rotor
 data_path = 'data/clutch_2'
+# af = pd.read_csv('annotations_file_n.csv')
+# af = pd.read_csv('new_dataset.csv')
 af = pd.read_csv('annotations_file.csv')
-
 train_data = af[af["dataset"].str.contains('train')]
 test_data = af[af["dataset"].str.contains('test')]
 validation_data = af[af["dataset"].str.contains('val')]
+
+# print(f'train data size: {len(train_data)}')
+# print(f'test data size: {len(test_data)}')
+# print(f'valid data size: {len(validation_data)}')
+# print(f'total = {len(train_data) + len(test_data) + len(validation_data)}')
 
 
 class clutchDataset(Dataset):
@@ -25,10 +32,8 @@ class clutchDataset(Dataset):
         self.is_train = is_train
         self.transform = transform
 
-
     def __len__(self):
         return len(self.dataframe)
-
 
     def __getitem__(self, idx):
         if torch.is_tensor(idx):
@@ -39,6 +44,7 @@ class clutchDataset(Dataset):
 
         img_norm = cv2.normalize(img, None, 0, 255, cv2.NORM_MINMAX)
         image = Image.fromarray(img_norm)
+
         label = torch.tensor(int(self.dataframe.iloc[idx, 2]))
 
         if self.transform:
@@ -46,38 +52,37 @@ class clutchDataset(Dataset):
         return image, label
 
 
-width = int(640 / 3)
-height = int(512 / 3)
+width = int(640 / 4)
+height = int(512 / 4)
 
 transform_train = transforms.Compose([
     transforms.Resize((height, width)),
     # transforms.Pad(1),
     transforms.RandomAffine((1, 10)),
-    transforms.RandomGrayscale(0.1),
-    transforms.RandomPerspective(),
+    # transforms.RandomGrayscale(0.1),
     transforms.RandomVerticalFlip(0.2),
-    transforms.GaussianBlur((3, 3)),
-    transforms.RandomInvert(0.3),
-    transforms.RandomSolarize(100),
-    transforms.RandomAdjustSharpness(2),
-    transforms.RandomAutocontrast(0.2),
-    transforms.ColorJitter(),
-    transforms.RandomHorizontalFlip(),
+    # transforms.GaussianBlur((3, 3)),
+    # transforms.RandomInvert(0.3),
+    # transforms.RandomSolarize(100),
+    # transforms.RandomAdjustSharpness(2),
+    # transforms.RandomAutocontrast(0.2),
+    # transforms.ColorJitter(),
+    # transforms.RandomHorizontalFlip(),
     transforms.RandomPerspective(),
     transforms.RandomRotation((1, 10)),
-    transforms.Grayscale(num_output_channels=1),
+    # transforms.Grayscale(num_output_channels=1),
     transforms.ToTensor()
 ])
 
 transform_valid = transforms.Compose([
     transforms.Resize((height, width)),
-    transforms.Grayscale(num_output_channels=1),
+    # transforms.Grayscale(num_output_channels=1),
     transforms.ToTensor()
 ])
 
 transform_test = transforms.Compose([
     transforms.Resize((height, width)),
-    transforms.Grayscale(num_output_channels=1),
+    # transforms.Grayscale(num_output_channels=1),
     transforms.ToTensor()
 ])
 
