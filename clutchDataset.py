@@ -7,6 +7,8 @@ from torch.utils.data import DataLoader
 import cv2
 from PIL import Image
 from torchvision.transforms import transforms
+from torchvision import transforms
+
 from tabulate import tabulate
 
 
@@ -14,7 +16,7 @@ from tabulate import tabulate
 data_path = 'data/clutch_2'
 # af = pd.read_csv('annotations_file_n.csv')
 # af = pd.read_csv('new_dataset.csv')
-af = pd.read_csv('annotations_file.csv')
+af = pd.read_csv('annotation_files/annotations_file.csv')
 train_data = af[af["dataset"].str.contains('train')]
 test_data = af[af["dataset"].str.contains('test')]
 validation_data = af[af["dataset"].str.contains('val')]
@@ -44,6 +46,7 @@ class clutchDataset(Dataset):
 
         img_norm = cv2.normalize(img, None, 0, 255, cv2.NORM_MINMAX)
         image = Image.fromarray(img_norm)
+        image = transforms.functional.crop(image, 194, 285 , 140, 320)
 
         label = torch.tensor(int(self.dataframe.iloc[idx, 2]))
 
@@ -52,15 +55,15 @@ class clutchDataset(Dataset):
         return image, label
 
 
-width = int(640 / 4)
-height = int(512 / 4)
-
+# width = int(640 / 1)
+# height = int(512 / 1)
+width = 160
+height = 70
 transform_train = transforms.Compose([
     transforms.Resize((height, width)),
-    # transforms.Pad(1),
-    transforms.RandomAffine((1, 10)),
+    # transforms.RandomAffine((1, 10)),
     # transforms.RandomGrayscale(0.1),
-    transforms.RandomVerticalFlip(0.2),
+    # transforms.RandomVerticalFlip(0.2),
     # transforms.GaussianBlur((3, 3)),
     # transforms.RandomInvert(0.3),
     # transforms.RandomSolarize(100),
@@ -68,8 +71,8 @@ transform_train = transforms.Compose([
     # transforms.RandomAutocontrast(0.2),
     # transforms.ColorJitter(),
     # transforms.RandomHorizontalFlip(),
-    transforms.RandomPerspective(),
-    transforms.RandomRotation((1, 10)),
+    # transforms.RandomPerspective(),
+    # transforms.RandomRotation((1, 10)),
     # transforms.Grayscale(num_output_channels=1),
     transforms.ToTensor()
 ])
@@ -95,7 +98,7 @@ test_dataset = clutchDataset(test_data, data_path, False, transform_test)
 # valid_dataloader = DataLoader(valid_dataset, batch_size=64, shuffle=True)
 # test_dataloader = DataLoader(test_dataset, batch_size=64, shuffle=True)
 
-# train_features, train_labels = next(iter(train_dataloader))
+# train_features, train_labels = next(iter(valid_dataloader))
 
 # img = train_features[0].squeeze()
 # if train_labels[0] == 0:
