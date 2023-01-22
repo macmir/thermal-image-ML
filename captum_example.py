@@ -17,7 +17,6 @@ from matplotlib.colors import LinearSegmentedColormap
 import torchvision
 from torchvision import models
 from torchvision import transforms
-
 from captum.attr import IntegratedGradients
 from captum.attr import GradientShap
 from captum.attr import Occlusion
@@ -26,16 +25,12 @@ from captum.attr import NoiseTunnel
 from captum.attr import visualization as viz
 from captum.attr import LayerAttribution
 from captum.attr import GuidedGradCam
-
 from omnixai.explainers.vision.specific.gradcam.pytorch.gradcam import GradCAM
-
-
 import CNN
 import cv2
 import clutchDataset
 import timm
 
-import feedwor
 
 model_no = 4
 
@@ -67,12 +62,7 @@ elif model_no == 4:
     state_dict = torch.load('saved_models/resnet10t_best.pth')
     model.load_state_dict(state_dict)
     model.eval()
-elif model_no ==5:
-    model = feedwor.FeedForwardNet()
-    state_dict = torch.load('saved_models/FeedFrwrd.pth')
-    model.load_state_dict(state_dict)
-    model.eval()
-#
+
 
 # converting .png to .jpg
 png_img = cv2.imread('captum_images/rotor_test.png')
@@ -96,8 +86,6 @@ transform = transforms.Compose(
     transforms.Resize((height, width))
     ]
     )
-
-# ImageNet normalization
 
 
 # img = Image.open('modified_img.jpg')

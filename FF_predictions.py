@@ -1,5 +1,4 @@
 import sys
-
 import torch
 import FF
 import clutchDataset
@@ -35,7 +34,7 @@ def predict(model, input, target, class_mapping):
         predicted_index = predictions[0].argmax(0) # take first max value
         predicted = class_mapping[predicted_index]
         expected = class_mapping[target]
-
+        print(predicted, expected)
     return predicted, expected
 
 
@@ -43,7 +42,7 @@ if __name__ == "__main__":
 
     # load back the model
     feed_forward_net = FF.FeedForwardNet()
-    state_dict = torch.load("feedforwardnet.pth")
+    state_dict = torch.load("saved_models/FeedFrwrd.pth")
     feed_forward_net.load_state_dict(state_dict)
 
     # load validation dataset
@@ -59,7 +58,7 @@ if __name__ == "__main__":
     #     print(input.size())
 
         predicted, expected = predict(feed_forward_net, input, target, class_mapping)
-        #print(f"Predicted: '{predicted}', expected: '{expected}'")
+        # print(f"Predicted: '{predicted}', expected: '{expected}'")
         y_true.append(expected)
         y_pred.append(y_true)
 
@@ -73,16 +72,16 @@ if __name__ == "__main__":
         for j in range(3):
             pred_sum[j] += cm[i][j]
             actual_sum[j] += cm[j][i]
-    # print()
-    # print(pred_sum)
-    # print(actual_sum)
-    # print()
-    # print(f"Recall for 'healthy' class: {cm[0][0] / pred_sum[0]}")
-    # print(f"Precision for 'healthy class: {cm[0][0] / actual_sum[0]}")
-    # print(f"\nRecall for 'misalignment' class: {cm[1][1] / pred_sum[1]}")
-    # print(f"Precision for 'misalignment class: {cm[0][0] / actual_sum[1]}")
-    # print(f"\nRecall for 'rotor damage' class: {cm[2][2] / pred_sum[2]}")
-    # print(f"Precision for 'rotor damage class: {cm[0][0] / actual_sum[2]}")
+    print()
+    print(pred_sum)
+    print(actual_sum)
+    print()
+    print(f"Recall for 'healthy' class: {cm[0][0] / pred_sum[0]}")
+    print(f"Precision for 'healthy class: {cm[0][0] / actual_sum[0]}")
+    print(f"\nRecall for 'misalignment' class: {cm[1][1] / pred_sum[1]}")
+    print(f"Precision for 'misalignment class: {cm[0][0] / actual_sum[1]}")
+    print(f"\nRecall for 'rotor damage' class: {cm[2][2] / pred_sum[2]}")
+    print(f"Precision for 'rotor damage class: {cm[0][0] / actual_sum[2]}")
     
 
     print(f"\ntraining settings: \nepochs: {FF.EPOCHS}\nbatch size: {FF.BATCH_SIZE}\nlearning rate:{FF.LEARNING_RATE}")

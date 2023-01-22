@@ -89,9 +89,6 @@ class CNN(nn.Module):
         )
 
     def forward(self, x):
-        # for layer in self.net:
-        #     x = layer(x)
-        # print(x.size())
         x = self.net(x)
         return x
 
@@ -120,15 +117,6 @@ def train():
                     val_predictions = model(val_input)
                     val_loss = criterion(val_predictions, val_label)
                     loss_temp.append(val_loss.item())
-        #
-        # if loss.item() > last_loss:
-        #     trigger += 1
-        # else:
-        #     trigger = 0
-        #
-        # if trigger >= patience:
-        #     print('Traning ended! - early stop')
-        #     break
 
                 for test_input, test_label in test_loader:
                     test_input = test_input.to(device)

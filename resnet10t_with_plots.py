@@ -1,18 +1,20 @@
 import numpy as np
+import timm
 import torch
 import torch.nn as nn
 import clutchDataset
 import matplotlib.pyplot as plt
-import torchvision.models
+import early_stopping
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model = torchvision.models.efficientnet_v2_s(weights=torchvision.models.EfficientNet_V2_S_Weights.DEFAULT, in_channels = 3, n_classes = 3)
+model = timm.create_model('resnet10t', pretrained=True, num_classes=3)
 model = model.to(device)
 
-epochs = 20
+
+epochs = 55
 learning_rate = 0.0003
-batch_size = 16
+batch_size = 8
 
 loss_val = []
 val_loss_val = []
@@ -41,6 +43,8 @@ valid_loader = torch.utils.data.DataLoader(
     dataset=valid_dataset,
     batch_size=batch_size,
     shuffle=False)
+
+early_stopper = early_stopping.EarlyStopper(patience=8, min_delta=0.1)
 
 def train():
 
@@ -83,7 +87,7 @@ def train():
 
 if __name__ == '__main__':
     train()
-    torch.save(model.state_dict(), "saved_models/efficientnet_v2_s.pth")
+    torch.save(model.state_dict(), "saved_models/resnet10t_with_plots.pth")
     plt.title("Test and validation loss")
     plt.plot(loss_val, '-gx', label = 'training loss')
     plt.plot(val_loss_val, '-rx', label = 'validation loss')

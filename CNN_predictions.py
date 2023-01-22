@@ -109,19 +109,6 @@ for i in range(len(test_data)):
     y_correct_vector.append(y_correct)
 CNN_metrics.get_metrics(y_true, y_pred, class_mapping)
 print('Accuracy: ', round( y_correct / len(test_data), 4) * 100, '%')
-# print(len(y_correct_vector))
-# accuracy = []
-# for i in range(2):
-#     accuracy[i] = y_correct_vector[i] / len(test_data) * 100
-
-# plt.title("Test accuracy")
-# plt.ylabel("Accuracy [%]")
-# plt.xlabel("Epoch")
-# plt.plot(accuracy * 100, '-bx')
-# plt.show()
-# print('Valid data: ')
-# y_true = []
-# y_pred = []
 y_correct = 0
 
 for i in range(len(valid_data)):
