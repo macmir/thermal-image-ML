@@ -1,4 +1,6 @@
 import os
+import sys
+
 import matplotlib.pyplot as plt
 import pandas as pd
 import torch
@@ -26,7 +28,6 @@ validation_data = af[af["dataset"].str.contains('val')]
 # print(f'valid data size: {len(validation_data)}')
 # print(f'total = {len(train_data) + len(test_data) + len(validation_data)}')
 
-
 class clutchDataset(Dataset):
     def __init__(self, dataframe, img_dir, is_train, transform=None):
         self.dataframe = dataframe
@@ -46,8 +47,8 @@ class clutchDataset(Dataset):
 
         img_norm = cv2.normalize(img, None, 0, 255, cv2.NORM_MINMAX)
         image = Image.fromarray(img_norm)
-        image = transforms.functional.crop(image, 194, 285 , 140, 320)
-
+        image = transforms.functional.crop(image, 194, 372 , 140, 220) # my initial crop
+        # image = transforms.functional.crop(image, 105, 328, 320, 320) # MP crop
         label = torch.tensor(int(self.dataframe.iloc[idx, 2]))
 
         if self.transform:
@@ -55,10 +56,12 @@ class clutchDataset(Dataset):
         return image, label
 
 
-# width = int(640 / 1)
-# height = int(512 / 1)
-width = 160
-height = 70
+width = int(640 / 1)
+height = int(512 / 1)
+# width = 320 #MP
+# height = 320 #MP
+# width = 220
+# height = 140
 transform_train = transforms.Compose([
     transforms.Resize((height, width)),
     # transforms.RandomAffine((1, 10)),
@@ -73,19 +76,19 @@ transform_train = transforms.Compose([
     # transforms.RandomHorizontalFlip(),
     # transforms.RandomPerspective(),
     # transforms.RandomRotation((1, 10)),
-    # transforms.Grayscale(num_output_channels=1),
+    transforms.Grayscale(num_output_channels=1),
     transforms.ToTensor()
 ])
 
 transform_valid = transforms.Compose([
     transforms.Resize((height, width)),
-    # transforms.Grayscale(num_output_channels=1),
+    transforms.Grayscale(num_output_channels=1),
     transforms.ToTensor()
 ])
 
 transform_test = transforms.Compose([
     transforms.Resize((height, width)),
-    # transforms.Grayscale(num_output_channels=1),
+    transforms.Grayscale(num_output_channels=1),
     transforms.ToTensor()
 ])
 
@@ -93,13 +96,13 @@ transform_test = transforms.Compose([
 train_dataset = clutchDataset(train_data, data_path, True, transform_train)
 valid_dataset = clutchDataset(validation_data, data_path, False, transform_valid)
 test_dataset = clutchDataset(test_data, data_path, False, transform_test)
-
+#
 # train_dataloader = DataLoader(train_dataset, batch_size=64, shuffle=True)
 # valid_dataloader = DataLoader(valid_dataset, batch_size=64, shuffle=True)
 # test_dataloader = DataLoader(test_dataset, batch_size=64, shuffle=True)
-
-# train_features, train_labels = next(iter(valid_dataloader))
-
+#
+# train_features, train_labels = next(iter(train_dataloader))
+#
 # img = train_features[0].squeeze()
 # if train_labels[0] == 0:
 #     label = 'healthy'
@@ -107,7 +110,7 @@ test_dataset = clutchDataset(test_data, data_path, False, transform_test)
 #     label = 'misalignment'
 # if train_labels[0] == 2:
 #     label = 'rotor damage'
-
+#
 # label = train_labels[0]
 # plt.imshow(img, cmap="gray")
 # print(f"Label: {label}")
